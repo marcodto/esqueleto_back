@@ -1,0 +1,12 @@
+{
+  "name": "Panel backend",
+  "version": "1.0.0",
+  "description": "Documentación para el sistema de Panel web.",
+  "title": "Panel backend",
+  "url": "https://localhost:8000",
+  "sampleUrl": "https://localhost:8000",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true
+  }
+}
