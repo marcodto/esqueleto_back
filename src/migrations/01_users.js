@@ -4,10 +4,16 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('users', {
       id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-      name: { type: Sequelize.STRING, allowNull: false },
+
+      first_name: { type: Sequelize.STRING, allowNull: false },
+      last_name: { type: Sequelize.STRING, allowNull: false },
       email: { type: Sequelize.STRING, allowNull: false, unique: true },
       password_hash: { type: Sequelize.STRING, allowNull: false },
       avatar: { type: Sequelize.STRING, allowNull: true },
+      phone: { type: Sequelize.STRING(20), allowNull: true },
+      city: { type: Sequelize.STRING, allowNull: true },
+      state: { type: Sequelize.STRING, allowNull: true },
+      is_active: { type: Sequelize.BOOLEAN, defaultValue: false },
 
       role_id: {
         type: Sequelize.INTEGER,
@@ -24,5 +30,5 @@ module.exports = {
 
   async down(queryInterface) {
     await queryInterface.dropTable('users');
-  }
+  },
 };

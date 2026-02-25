@@ -8,7 +8,7 @@ module.exports = (Router) => {
     prefix: '/usuarios',
   });
 
-  router.use(hasAuth);
+  //router.use(hasAuth);
 
   router.use(async (ctx, next) => {
     try {
@@ -61,11 +61,11 @@ module.exports = (Router) => {
     '/',
     validate({
       query: {
-        limit:  joi.number().integer().positive(),
-        page:   joi.number().integer().positive(),
-        order:  joi.string().trim(),
+        limit: joi.number().integer().positive(),
+        page: joi.number().integer().positive(),
+        order: joi.string().trim(),
         search: joi.string().trim(),
-        role:   joi.string().valid('coach', 'client'),
+        role: joi.number().integer().valid(1, 2).required(),
       },
     }),
     CtrlUsers.getUsuarios,
@@ -118,14 +118,14 @@ module.exports = (Router) => {
    * @apiBody {String} name     Nombre completo del usuario.
    * @apiBody {String} email    Email del usuario.
    * @apiBody {String} password Contraseña (mínimo 6 caracteres).
-   * @apiBody {String} role     Rol del usuario: "coach" o "client".
+   * @apiBody {Number} role     Rol del usuario: 1 (coach) o 2 (client).
    *
    * @apiParamExample {json} Input:
    * {
    *   "name": "Carlos Ruiz",
    *   "email": "carlos@gmail.com",
    *   "password": "123456",
-   *   "role": "coach"
+   *   "role": 1
    * }
    *
    * @apiSuccessExample {json} Success-Response:
@@ -157,10 +157,11 @@ module.exports = (Router) => {
     '/',
     validate({
       body: {
-        name:     joi.string().trim().required(),
-        email:    joi.string().trim().email().required(),
+        name: joi.string().trim().required(),
+        email: joi.string().trim().email().required(),
         password: joi.string().trim().min(6).required(),
-        role:     joi.string().valid('coach', 'client').required(),
+        role: joi.number().integer().valid(1, 2).optional(),
+
       },
     }),
     CtrlUsers.addUsuario,
@@ -210,10 +211,10 @@ module.exports = (Router) => {
         id: joi.number().integer().positive(),
       },
       body: {
-        name:     joi.string().trim().optional(),
-        email:    joi.string().trim().email().optional(),
+        name: joi.string().trim().optional(),
+        email: joi.string().trim().email().optional(),
         password: joi.string().trim().min(6).optional(),
-        role:     joi.string().valid('coach', 'client').optional(),
+        role: joi.string().valid('coach', 'client').optional(),
       },
     }),
     CtrlUsers.updateUsuario,

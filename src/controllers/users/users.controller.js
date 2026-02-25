@@ -21,11 +21,11 @@ exports.addUsuario = async (ctx, next) => {
   }
 
   // 2. Buscar el rol en la tabla roles
-  const roleRecord = await Role.findOne({ where: { name: role } });
+  const roleRecord = await Role.findByPk(role);
   if (!roleRecord) {
     return ctx.send(400, {
       type: 'User/RolInvalido',
-      message: 'El rol especificado no existe. Usa "coach" o "client".',
+      message: 'El rol especificado no existe. Usa 1 (coach) o 2 (client).',
     });
   }
 
@@ -41,7 +41,7 @@ exports.addUsuario = async (ctx, next) => {
       role_id: roleRecord.id,
       createdAt: Sequelize.fn('now'),
       updatedAt: Sequelize.fn('now'),
-    })
+    }),
   );
 
   if (err) {
@@ -96,7 +96,7 @@ exports.getUsuarios = async (ctx) => {
   // Filtro por búsqueda de texto
   if (search) {
     where[Op.or] = [
-      { name:  { [Op.like]: `%${search}%` } },
+      { name: { [Op.like]: `%${search}%` } },
       { email: { [Op.like]: `%${search}%` } },
     ];
   }
@@ -147,7 +147,7 @@ exports.updateUsuario = async (ctx, next) => {
   const { name, email, password, role } = ctx.request.body;
   const updateData = {};
 
-  if (name)  updateData.name  = name;
+  if (name) updateData.name = name;
   if (email) updateData.email = email;
 
   // Si viene password nueva, hashearla
@@ -157,11 +157,11 @@ exports.updateUsuario = async (ctx, next) => {
 
   // Si viene rol, buscarlo y asignar role_id
   if (role) {
-    const roleRecord = await Role.findOne({ where: { name: role } });
+    const roleRecord = await Role.findByPk(role);
     if (!roleRecord) {
       return ctx.send(400, {
         type: 'User/RolInvalido',
-        message: 'El rol especificado no existe. Usa "coach" o "client".',
+        message: 'El rol especificado no existe. Usa 1 (coach) o 2 (client).',
       });
     }
     updateData.role_id = roleRecord.id;
