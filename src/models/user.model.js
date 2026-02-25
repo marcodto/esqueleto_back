@@ -4,33 +4,11 @@ module.exports = class User extends Model {
   static init(sequelize, DataTypes) {
     return super.init(
       {
-        id: {
-          type: DataTypes.INTEGER,
-          autoIncrement: true,
-          primaryKey: true,
-        },
-        name: {
-          type: DataTypes.STRING(120),
-          allowNull: false,
-        },
-        email: {
-          type: DataTypes.STRING(150),
-          allowNull: false,
-          unique: true,
-        },
-        password_hash: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        role: {
-          type: DataTypes.ENUM('coach', 'client'),
-          allowNull: false,
-        },
+        name: DataTypes.STRING,
+        email: DataTypes.STRING,
+        password_hash: DataTypes.STRING,
         avatar: DataTypes.STRING,
-        rating_avg: {
-          type: DataTypes.FLOAT,
-          defaultValue: 0,
-        },
+        role_id: DataTypes.INTEGER,
       },
       {
         sequelize,
@@ -42,23 +20,11 @@ module.exports = class User extends Model {
   }
 
   static associate(models) {
+    this.belongsTo(models.Role, { foreignKey: 'role_id', as: 'role' });
+
+    // Asociaciones existentes que tengas
     this.hasOne(models.ClientProfile, { foreignKey: 'user_id' });
-
-    this.hasMany(models.DietPlan, { foreignKey: 'coach_id' });
-    this.hasMany(models.WorkoutPlan, { foreignKey: 'coach_id' });
-
-    this.hasMany(models.ProgressLog, { foreignKey: 'client_id' });
-
-    this.hasMany(models.Subscription, {
-      foreignKey: 'client_id',
-      as: 'ClientSubscriptions',
-    });
-
-    this.hasMany(models.Subscription, {
-      foreignKey: 'coach_id',
-      as: 'CoachSubscriptions',
-    });
-
-    this.hasMany(models.Message, { foreignKey: 'sender_id' });
+    this.hasMany(models.Conversation, { as: 'coachConversations', foreignKey: 'coach_id' });
+    this.hasMany(models.Conversation, { as: 'clientConversations', foreignKey: 'client_id' });
   }
 };
